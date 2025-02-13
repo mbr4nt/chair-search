@@ -23,6 +23,17 @@
         <ais-refinement-list attribute="category" show-more="true" show-more-limit="500" />
         <h2>Series</h2>
         <ais-refinement-list attribute="series" show-more="true" show-more-limit="500" />
+        <h2>Price</h2>
+        <ais-numeric-menu
+          attribute="price"
+          :items="[
+            { label: 'All' },
+            { label: '<= 1000$', end: 1000 },
+            { label: '1000$ - 2000$', start: 1000, end: 2000 },
+            { label: '2000$ - 5000$', start: 2000, end: 5000 },
+            { label: '>= 5000$', start: 5000 },
+          ]"
+        />
       </div>
       <div class="search-panel__results">
         <app-debounced-search-box :delay="10" class="ais-SearchBox-input" />
@@ -37,6 +48,7 @@
                 <ais-snippet :hit="item" attribute="name" />
               </div>
               <div class="hit-info">series: {{ item.series }}</div>
+               <div class="hit-info">price {{ formatCurrency(item.price) }}</div>
             </div>
           </template>
         </ais-hits>
@@ -66,6 +78,12 @@ export default {
       let result = (pkg || className) ? pkg + className + pn : pn;
       console.log("Item clicked: " + result);
       window.chrome.webview.postMessage(result);
+    },
+    formatCurrency(value) {
+      return new Intl.NumberFormat('en-US', {
+        style: 'currency',
+        currency: 'USD'
+      }).format(value);
     },
   },
   data() {

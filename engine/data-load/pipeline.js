@@ -4,6 +4,7 @@ import { addUid } from "./pipeline/addUid.js";
 import { processPropName } from "./pipeline/processPropName.js";
 import { renameProp } from "./pipeline/renameProps.js";
 import { deleteSomeProps } from "./pipeline/deleteSomeProps.js";
+import { transformPriceToNumber } from "./pipeline/transformPriceToNumber.js";
 export async function pipeline(model) {
     const steps = [
         processPropName,
@@ -11,7 +12,8 @@ export async function pipeline(model) {
         renameProp,
         addUid,
         addImage,
-        addCmInfo
+        addCmInfo,
+        transformPriceToNumber
     ];
 
     let processed = model;

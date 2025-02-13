@@ -15,7 +15,7 @@ export async function indexData(models) {
     try {
         let response = await requestAndWait(url, verb, body, bearerToken);
         console.log("index response", response);
-        response = await requestAndWait(`/indexes/${index.key}/settings/filterable-attributes`, "PUT", ["category", "series"], bearerToken);
+        response = await requestAndWait(`/indexes/${index.key}/settings/filterable-attributes`, "PUT", ["category", "series", "price"], bearerToken);
         console.log("filterable-attributes response", response);
 
     } catch (error) {
