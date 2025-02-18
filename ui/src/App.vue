@@ -77,7 +77,9 @@ export default {
       let className = cmInfo?.className ? cmInfo.className + '/' : "";
       let result = (pkg || className) ? pkg + className + pn : pn;
       console.log("Item clicked: " + result);
-      window.chrome.webview.postMessage(result);
+      let cetCall = 'cet://insert-chair.custom.global/';
+      console.log(cetCall + result);
+      window.chrome.webview.postMessage(cetCall + result);
     },
     formatCurrency(value) {
       return new Intl.NumberFormat('en-US', {
