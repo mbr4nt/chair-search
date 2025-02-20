@@ -1,8 +1,8 @@
 <template>
   <header class="header">
     <img src="./assets/logo.png" />
-    <h1 class="header-title">Chair search</h1>
-    <p class="header-subtitle">Very good for finding chairs</p>
+    <h1 class="header-title">Seating Search</h1>
+    <p class="header-subtitle">A smarter way to find chairs</p>
   </header>
   <div class="container">
     <ais-instant-search :search-client="searchClient" index-name="models">
@@ -158,6 +158,7 @@ body {
 .header-title {
   font-size: 1.2rem;
   font-weight: normal;
+  padding-left: 10px !important;
 }
 
 .hit-description {
