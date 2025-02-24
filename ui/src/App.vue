@@ -91,8 +91,8 @@ export default {
   data() {
     return {
       searchClient: instantMeiliSearch(
-        config.VUE_APP_MEILISEARCH_HOST,
-        config.VUE_APP_MEILISEARCH_API_KEY,
+        process.env.VUE_APP_MEILISEARCH_HOST,
+        process.env.VUE_APP_MEILISEARCH_API_KEY,
         {
           finitePagination: true,
         }
