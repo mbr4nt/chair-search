@@ -5,9 +5,6 @@ services:
     image: mbr4nt/global-seating-search-ui:latest
     ports:
       - "4040:80"
-    environment:
-      - VUE_APP_MEILISEARCH_HOST=http://localhost:7700/
-      - VUE_APP_MEILISEARCH_API_KEY=a0Mfp5S-WKAQ5_dtAARW3EopM6eij7u-OrrWo4JqTIk
     container_name: ui-container
 
   engine:
@@ -19,8 +16,6 @@ services:
     environment:
       - IMAGE_SERVER_URL=http://localhost:3002/
       - MEILI_MASTER_KEY=a0Mfp5S-WKAQ5_dtAARW3EopM6eij7u-OrrWo4JqTIk
-    volumes:
-      - ./engine/data:/data
     container_name: engine-container
 
   image-server:
