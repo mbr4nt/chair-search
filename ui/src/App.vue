@@ -20,9 +20,19 @@
           ]"
         /> -->
         <h2>Category</h2>
-        <ais-refinement-list attribute="category" show-more="true" show-more-limit="500" />
+        <ais-refinement-list attribute="categories" />
         <h2>Series</h2>
-        <ais-refinement-list attribute="series" show-more="true" show-more-limit="500" />
+        <ais-refinement-list attribute="series" limit="5" show-more="true" show-more-limit="500" />
+        <h2>Arm Type</h2>
+        <ais-refinement-list attribute="armType" />
+        <h2>Base Type</h2>
+        <ais-refinement-list attribute="baseType" limit="5" show-more="true" show-more-limit="500" />
+        <h2>Back Material</h2>
+        <ais-refinement-list attribute="backMaterial" />
+        <h2>Back Height</h2>
+        <ais-refinement-list attribute="backHeight" />
+        <h2>Tilt Prop</h2>
+        <ais-refinement-list attribute="tiltProp" />
         <h2>Price</h2>
         <ais-numeric-menu
           attribute="price"
