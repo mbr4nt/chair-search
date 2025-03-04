@@ -7,9 +7,17 @@ export async function renameProp(model) {
 }
 
 function rename(propName) {
-  if(propName === 'subcategory') {
-    return 'category';
+  switch (propName) {
+    case 'uSDPrice':
+      return 'usdPrice';
+    case 'cADPrice':
+      return 'cadPrice';
+    case 'uSDCatalogue':
+      return 'usdCatalogue';
+    case 'cADCatalogue':
+      return 'cadCatalogue';
+    default:
+      return propName;
   }
-  return propName;
 }
   

@@ -1,10 +1,10 @@
 import { deleteData } from "./deleteData.js";
 import { requestAndWait } from "./requestAndWait.js";
 
-export async function indexData(models) {
+export async function indexData(models, currency) {
     // /await deleteData();
     const index = {
-        key: "models"
+        key: `${currency}`
     };
 
     const url = `/indexes/${index.key}/documents`;

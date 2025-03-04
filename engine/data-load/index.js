@@ -5,6 +5,8 @@ import { indexData } from "./indexData.js";
 import { dirname, join } from 'path';
 import { fileURLToPath } from 'url';
 import { waitForMeilisearch } from "./waitForMeilisearch.js";
+import { generateCadModel } from "./generateCadModel.js";
+import { generateUsdModel } from "./generateUsdModel.js";
 
 // Get the directory name of the current module file
 const __dirname = dirname(fileURLToPath(import.meta.url));
@@ -24,12 +26,26 @@ let processed = {
     models
 };
 
-// Write JSON Object to file
+let processedUsd = {
+    models: await generateUsdModel(models)
+};
+
+let processedCad = {
+    models: await generateCadModel(models)
+};
+
+// Write JSONObject to file
 await fs.writeFile(join(__dirname, "./processed/models.json"), JSON.stringify(processed, null, 2));
+await fs.writeFile(join(__dirname, "./processed/models-usd.json"), JSON.stringify(processedUsd, null, 2));
+await fs.writeFile(join(__dirname, "./processed/models-cad.json"), JSON.stringify(processedCad, null, 2));
 
 await waitForMeilisearch();
 
-await indexData(models);
+// Push modelsUsd to indexData
+await indexData(processedUsd.models, 'usd');
+
+// Push modelsCad to indexData
+await indexData(processedCad.models, 'cad');
 
 //await takeDump();
 

@@ -5,7 +5,7 @@
     <p class="header-subtitle">A smarter way to find chairs</p>
   </header>
   <div class="container">
-    <ais-instant-search :search-client="searchClient" index-name="models">
+    <ais-instant-search :search-client="searchClient" :index-name="currencyParam">
       <div class="search-panel__filters">
         <!-- <ais-sort-by
           :items="[
@@ -58,7 +58,8 @@
                 <ais-snippet :hit="item" attribute="name" />
               </div>
               <div class="hit-info">series: {{ item.series }}</div>
-               <div class="hit-info">price {{ formatCurrency(item.price) }}</div>
+              <div class="hit-info">price: {{ formatCurrency(item.price) }}</div>
+              <div class="hit-info">catalogue: {{ item.catalogue }}</div>
             </div>
           </template>
         </ais-hits>
@@ -69,6 +70,7 @@
       </div>
       <ais-pagination />
     </ais-instant-search>
+    <p>You are viewing the {{currencyParam}} catalogue.</p>
   </div>
 </template>
 
@@ -96,7 +98,7 @@ export default {
         style: 'currency',
         currency: 'USD'
       }).format(value);
-    },
+    }
   },
   data() {
     return {
@@ -107,11 +109,19 @@ export default {
           finitePagination: true,
         }
       ).searchClient,
+      currencyParam: "usd"
     };
+  },
+  created() {
+    console.log(this.currencyParam);
+    let urlParams = new URLSearchParams(window.location.search);
+    let currency = urlParams.get('currency');
+    if (currency) {
+      this.currencyParam = currency;
+    }
+    console.log(this.currencyParam);
   }
 };
-
-
 
 </script>
 <style>

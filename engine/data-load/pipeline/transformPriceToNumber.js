@@ -1,4 +1,5 @@
 export async function transformPriceToNumber(model) {
-    model.price = parseFloat(model.price);
+    model.usdPrice = parseFloat(model.usdPrice);
+    model.cadPrice = parseFloat(model.cadPrice);
     return model;
 }  
