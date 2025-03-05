@@ -49,7 +49,7 @@
         <app-debounced-search-box :delay="10" class="ais-SearchBox-input" />
         <ais-hits>
           <template v-slot:item="{ item }">
-            <div @click="itemClicked(item.cmInfo, item.partNumber)">
+            <div @click="itemClicked(item)">
               <div class="hit-name">
                 <ais-highlight :hit="item" attribute="partNumber" />
               </div>
@@ -83,11 +83,15 @@ export default {
     AppDebouncedSearchBox,
   },
   methods: {
-    itemClicked(cmInfo, partNumber) {
+    itemClicked(item) {
+      let cmInfo = item.cmInfo;
+      let partNumber = item.partNumber;
+      let catalogue = item.catalogue;
+
       let pn = cmInfo?.partNumber ?? partNumber;
       let pkg = cmInfo?.package ? cmInfo.package + '/' : "";
       let className = cmInfo?.className ? cmInfo.className + '/' : "";
-      let result = (pkg || className) ? pkg + className + pn : pn;
+      let result = (pkg || className) ? pkg + className + pn : catalogue + "/" + pn;
       console.log("Item clicked: " + result);
       let cetCall = 'cet://insert-chair.custom.global/';
       console.log(cetCall + result);
