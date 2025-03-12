@@ -31,8 +31,8 @@
         <ais-refinement-list attribute="backMaterial" />
         <h2>Back Height</h2>
         <ais-refinement-list attribute="backHeight" />
-        <h2>Tilt Prop</h2>
-        <ais-refinement-list attribute="tiltProp" />
+        <h2>Tilter Prop</h2>
+        <ais-refinement-list attribute="tilterProp" />
         <h2>Price</h2>
         <ais-numeric-menu
           attribute="price"

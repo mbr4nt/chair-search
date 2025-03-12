@@ -11,7 +11,7 @@ export async function indexData(models, currency) {
     const verb = "PUT";
     const body = models;
     const bearerToken = process.env.MEILI_MASTER_KEY;
-    const categoriesToFilter = ["categories", "series", "price", "armType", "baseType", "backMaterial", "backHeight", "tiltProp"];
+    const categoriesToFilter = ["categories", "series", "price", "armType", "baseType", "backMaterial", "backHeight", "tilterProp"];
 
     try {
         let response = await requestAndWait(url, verb, body, bearerToken);
