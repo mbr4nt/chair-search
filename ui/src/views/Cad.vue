@@ -152,7 +152,7 @@ export default {
                       armType = [], baseType = [], backMaterial = [], 
                       backHeight = [], tilterProp = [], price } 
                   = qsModule.parse(location.search.slice(1));
-              console.log(location.search.slice(1), price);
+                  
               // `qs` does not return an array when there's a single value.
               const allCategories = Array.isArray(categories)
                 ? categories

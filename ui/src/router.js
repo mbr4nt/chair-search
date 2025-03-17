@@ -14,4 +14,19 @@ const router = createRouter({
   routes
 });
 
+router.beforeEach((to, from, next) => {
+  const isAuthenticated = document.cookie.includes('CETGlobalAuth');
+  from.request
+
+  if (to.matched.some(record => record.meta.requiresAuth)) {
+    if (!isAuthenticated) {
+      return false;
+    } else {
+      next();
+    }
+  } else {
+    next();
+  }
+});
+
 export default router;
