@@ -80,10 +80,11 @@ export default {
       let pkg = cmInfo?.package ? cmInfo.package + '/' : "";
       let className = cmInfo?.className ? cmInfo.className + '/' : "";
       let result = (pkg || className) ? pkg + className + pn : catalogue + "/" + pn;
+      let query = window.location.search ? '/' + window.location.search : '';
+      
       console.log("Item clicked: " + result);
       let cetCall = 'cet://insert-chair.custom.global/';
-      console.log(cetCall + result);
-      window.chrome.webview.postMessage(cetCall + result);
+      console.log(cetCall + result + query);
     },
     formatCurrency(value) {
       return new Intl.NumberFormat('en-US', {
