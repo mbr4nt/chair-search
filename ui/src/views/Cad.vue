@@ -34,7 +34,7 @@
         />
       </div>
       <div class="search-panel__results">
-        <app-debounced-search-box :delay="10" class="ais-SearchBox-input" />
+        <app-debounced-search-box v-model="searchQuery" :delay="10" class="ais-SearchBox-input" />
         <ais-hits>
           <template v-slot:item="{ item }">
             <div @click="itemClicked(item)">
@@ -96,7 +96,9 @@ export default {
     }
   },
   data() {
+    const query = new URLSearchParams(window.location.search).get('query') || '';
     return {
+      searchQuery: decodeURIComponent(query),
       searchClient: instantMeiliSearch(
         process.env.VUE_APP_MEILISEARCH_HOST,
         process.env.VUE_APP_MEILISEARCH_API_KEY,
@@ -256,6 +258,11 @@ export default {
         },
     };
   },
+  watch: {
+    searchQuery(newQuery) {
+      this.$router.push({ query: { ...this.$route.query, query: newQuery } });
+    }
+  }
 };
 
 </script>
