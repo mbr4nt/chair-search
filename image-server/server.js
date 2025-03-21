@@ -1,17 +1,26 @@
 const http = require('http');
 const fs = require('fs');
 const path = require('path');
-const crypto = require('crypto'); // For generating ETag
 
 const PORT = 3000;
 const IMAGE_FOLDER = path.join(__dirname, 'images');
-const IMAGE_NOT_FOUND = path.join(IMAGE_FOLDER, 'image-not-found.jpg'); // Path to the default image
+const IMAGE_NOT_FOUND = path.join(IMAGE_FOLDER, 'image-not-found.jpg');
 
-// In-memory cache
-const cache = new Map();
+const mimeTypes = {
+    '.jpg': 'image/jpeg',
+    '.jpeg': 'image/jpeg',
+    '.png': 'image/png',
+    '.gif': 'image/gif',
+    '.webp': 'image/webp',
+};
+
+function generateEtag(stats) {
+    const mtime = stats.mtime.getTime().toString(16);
+    const size = stats.size.toString(16);
+    return `"${mtime}-${size}"`;
+}
 
 const server = http.createServer((req, res) => {
-    // Construct the file path
     const filePath = path.join(IMAGE_FOLDER, req.url);
 
     // Prevent directory traversal attacks
@@ -21,82 +30,60 @@ const server = http.createServer((req, res) => {
         return;
     }
 
-    // Check if the file is in cache
-    if (cache.has(filePath)) {
-        const { data, mimeType, etag } = cache.get(filePath);
-        res.setHeader('Content-Type', mimeType);
-        res.setHeader('Cache-Control', 'public, max-age=31536000'); // Cache for 1 year
-        res.setHeader('ETag', etag);
-
-        // Handle conditional requests
-        if (req.headers['if-none-match'] === etag) {
-            res.statusCode = 304;
-            res.end();
-        } else {
-            res.statusCode = 200;
-            res.end(data);
-        }
-        return;
-    }
-
-    // Check if the file exists
-    fs.access(filePath, fs.constants.F_OK, (err) => {
+    fs.stat(filePath, (err, stats) => {
         if (err) {
-            // If the file doesn't exist, serve the default "image-not-found.jpg"
-            fs.readFile(IMAGE_NOT_FOUND, (err, data) => {
+            // File not found - serve default image
+            fs.stat(IMAGE_NOT_FOUND, (err, defaultStats) => {
                 if (err) {
                     res.statusCode = 404;
                     res.end('Image not found, and default image is missing');
-                } else {
-                    const etag = crypto.createHash('md5').update(data).digest('hex');
-                    res.statusCode = 404;
-                    res.setHeader('Content-Type', 'image/jpeg');
-                    res.setHeader('Cache-Control', 'public, max-age=31536000'); // Cache for 1 year
-                    res.setHeader('ETag', etag);
-                    res.end(data);
+                    return;
                 }
-            });
-            return;
-        }
 
-        // Read and serve the file
-        fs.readFile(filePath, (err, data) => {
-            if (err) {
-                res.statusCode = 500;
-                res.end('Error reading file');
-            } else {
-                // Set the appropriate Content-Type based on file extension
-                const ext = path.extname(filePath).toLowerCase();
-                const mimeTypes = {
-                    '.jpg': 'image/jpeg',
-                    '.jpeg': 'image/jpeg',
-                    '.png': 'image/png',
-                    '.gif': 'image/gif',
-                    '.webp': 'image/webp',
-                };
-                const mimeType = mimeTypes[ext] || 'application/octet-stream';
-                const etag = crypto.createHash('md5').update(data).digest('hex');
-
-                // Cache the file in memory
-                cache.set(filePath, { data, mimeType, etag });
-
-                res.setHeader('Content-Type', mimeType);
-                res.setHeader('Cache-Control', 'public, max-age=31536000'); // Cache for 1 year
+                const etag = generateEtag(defaultStats);
                 res.setHeader('ETag', etag);
+                res.setHeader('Cache-Control', 'public, max-age=31536000');
 
-                // Handle conditional requests
                 if (req.headers['if-none-match'] === etag) {
                     res.statusCode = 304;
                     res.end();
                 } else {
-                    res.statusCode = 200;
-                    res.end(data);
+                    res.statusCode = 404;
+                    res.setHeader('Content-Type', 'image/jpeg');
+                    const stream = fs.createReadStream(IMAGE_NOT_FOUND);
+                    stream.on('error', () => {
+                        res.statusCode = 500;
+                        res.end('Error serving default image');
+                    });
+                    stream.pipe(res);
                 }
+            });
+        } else {
+            // File exists - serve it
+            const etag = generateEtag(stats);
+            res.setHeader('ETag', etag);
+            res.setHeader('Cache-Control', 'public, max-age=31536000');
+
+            if (req.headers['if-none-match'] === etag) {
+                res.statusCode = 304;
+                res.end();
+                return;
             }
-        });
+
+            const ext = path.extname(filePath).toLowerCase();
+            const mimeType = mimeTypes[ext] || 'application/octet-stream';
+            res.setHeader('Content-Type', mimeType);
+
+            const stream = fs.createReadStream(filePath);
+            stream.on('error', () => {
+                res.statusCode = 500;
+                res.end('Error reading file');
+            });
+            stream.pipe(res);
+        }
     });
 });
 
 server.listen(PORT, () => {
-    console.log(`Server is running on http://localhost:${PORT}`);
+    console.log(`Server running on http://localhost:${PORT}`);
 });
