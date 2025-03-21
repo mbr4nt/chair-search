@@ -85,6 +85,8 @@ export default {
       console.log("Item clicked: " + result);
       let cetCall = 'cet://insert-chair.custom.global/';
       console.log(cetCall + result + query);
+
+      window.chrome.webview.postMessage(cetCall + result + query);
     },
     formatCurrency(value) {
       return new Intl.NumberFormat('en-US', {
